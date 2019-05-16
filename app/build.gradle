@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -23,14 +24,23 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'mips', 'mips64', 'arm64-v8a'
+            universalApk false
+        }
+    }
 }
 
 dependencies {
     //Android support
     compile 'com.android.support:design:25.3.1'
     //Android annotations
-    annotationProcessor "org.androidannotations:androidannotations:4.2.0"
-    compile "org.androidannotations:androidannotations-api:4.2.0"
+    annotationProcessor "org.androidannotations:androidannotations:4.6.0"
+    compile "org.androidannotations:androidannotations-api:4.6.0"
     //BitcoinJ SDK
     compile 'org.bitcoinj:bitcoinj-core:0.14.4'
     //QR support
@@ -41,3 +51,4 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.12'
     compile 'org.slf4j:slf4j-simple:1.7.12'
 }
+
