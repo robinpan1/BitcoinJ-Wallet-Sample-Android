@@ -14,4 +14,9 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_info_outline_white_24dp"/>
 
+    <item
+        android:id="@+id/btnExportMnemonic_MM"
+        android:title="@string/export_mnemonic"
+        app:showAsAction="never"/>
+
 </menu>

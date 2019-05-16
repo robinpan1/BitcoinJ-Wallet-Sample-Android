@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.thinkmobiles.bitcoinwalletsample.Constants;
+import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -12,13 +13,13 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.utils.BriefLogFormatter;
 import org.bitcoinj.utils.Threading;
+import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 
@@ -104,6 +105,7 @@ public class MainActivityPresenter implements MainActivityContract.MainActivityP
     @Override
     public void send() {
         String recipientAddress = view.getRecipient();
+        System.out.println("RecipientAddress = " + recipientAddress);
         String amount = view.getAmount();
         if(TextUtils.isEmpty(recipientAddress) || recipientAddress.equals("Scan recipient QR")) {
             view.showToastMessage("Select recipient");
@@ -135,6 +137,14 @@ public class MainActivityPresenter implements MainActivityContract.MainActivityP
         view.displayInfoDialog(walletAppKit.wallet().currentReceiveAddress().toBase58());
     }
 
+    @Override
+    public void getMnemonic() {
+        DeterministicSeed seed = walletAppKit.wallet().getKeyChainSeed();
+        final String mnemonic = Joiner.on(" ").join(seed.getMnemonicCode());
+
+        view.displayMnemonic(mnemonic);
+    }
+
     private void setBtcSDKThread() {
         final Handler handler = new Handler();
         Threading.USER_THREAD = handler::post;
@@ -150,7 +160,8 @@ public class MainActivityPresenter implements MainActivityContract.MainActivityP
             view.displayMyBalance(wallet.getBalance().toFriendlyString());
             view.clearAmount();
             view.displayRecipientAddress(null);
-            view.showToastMessage("Sent " + prevBalance.minus(newBalance).minus(tx.getFee()).toFriendlyString());
+            //view.showToastMessage("Sent " + prevBalance.minus(newBalance).minus(tx.getFee()).toFriendlyString());
+            view.displayTxSentDialog(tx.getHashAsString());
         });
     }
 }

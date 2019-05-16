@@ -8,12 +8,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -108,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         presenter.getInfoDialog();
     }
 
+    @OptionsItem(R.id.btnExportMnemonic_MM)
+    protected void clickExportMnemonic() {
+        presenter.getMnemonic();
+    }
+
     private void initToolbar() {
         setSupportActionBar(toolbar_AT);
         if(getSupportActionBar() != null) {
@@ -186,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     @Override
     public void clearAmount() {
-        etAmount_AM.setText(null);
+        etAmount_AM.setText("0.00");
     }
 
     @Override
@@ -208,6 +215,36 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     @Override
+    public void displayTxSentDialog(String txid) {
+        final SpannableString s = new SpannableString("https://tbtc.bitaps.com/" + txid);
+        Linkify.addLinks(s, Linkify.ALL);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Transaction Sent");
+        builder.setMessage(s);
+        builder.setCancelable(true);
+        builder.setPositiveButton("GOT IT", (dialog, which) -> dialog.dismiss());
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        TextView msgTxt = (TextView) alertDialog.findViewById(android.R.id.message);
+        msgTxt.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
+    public void displayMnemonic(String mnemonic) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Mnemonic words");
+        builder.setMessage(mnemonic);
+        builder.setCancelable(true);
+        builder.setPositiveButton("I've written it down!", (dialog, which) -> dialog.dismiss());
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        TextView msgTxt = (TextView) alertDialog.findViewById(android.R.id.message);
+        msgTxt.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -218,23 +255,46 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     private void setListeners() {
         srlContent_AM.setOnRefreshListener(() -> presenter.refresh());
-        tvRecipientAddress_AM.setOnClickListener(v -> presenter.pickRecipient());
+        //tvRecipientAddress_AM.setOnClickListener(v -> presenter.pickRecipient());
+        tvRecipientAddress_AM.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(v.getText().toString().trim().length() == 0) {
+                        showToastMessage("自動填入預設地址！");
+                        tvRecipientAddress_AM.setText("2NGZrVvZG92qGYqzTLjCAewvPZ7JE8S8VxE");
+                    }
+                }
+                return false;
+            }
+        });
         btnSend_AM.setOnClickListener(v -> presenter.send());
-        etAmount_AM.addTextChangedListener(new TextWatcher() {
+//        etAmount_AM.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if(s.toString().trim().length() == 0)
+//                    etAmount_AM.setText("0.00");
+//            }
+//        });
+        etAmount_AM.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.toString().trim().length() == 0)
-                    etAmount_AM.setText("0.00");
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(v.getText().toString().trim().length() == 0) {
+                        etAmount_AM.setText("0.00");
+                    }
+                }
+                return false;
             }
         });
         ivCopy_AM.setOnClickListener(v -> {

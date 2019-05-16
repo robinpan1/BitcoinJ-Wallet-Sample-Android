@@ -3,6 +3,7 @@
     <string name="scan_qr">menu_scan_qr</string>
     <string name="my_qr_code">menu_my_qr</string>
     <string name="info">menu_info</string>
+    <string name="export_mnemonic">Export Mnemonic</string>
 
     <string name="scan_recipient_qr">Scan recipient QR code</string>
 

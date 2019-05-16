@@ -129,6 +129,32 @@
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
 
+                <!-- Bound QR code to recipient address block -->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:paddingBottom="8dp"-->
+                    <!--android:paddingEnd="24dp"-->
+                    <!--android:paddingStart="24dp"-->
+                    <!--android:paddingTop="8dp">-->
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="To:"-->
+                        <!--android:textSize="18sp" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvRecipientAddress_AM"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center"-->
+                        <!--android:hint="Scan recipient QR"-->
+                        <!--android:textSize="14sp" />-->
+
+                <!--</LinearLayout>-->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,16 +167,18 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="To:"
+                        android:text="To(Type):"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/tvRecipientAddress_AM"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:hint="Scan recipient QR"
-                        android:textSize="14sp" />
+                        android:hint="Type recipient address"
+                        android:textSize="14sp"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true" />
 
                 </LinearLayout>
 
@@ -179,7 +207,7 @@
                         android:layout_width="65dp"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:cursorVisible="false"
+                        android:cursorVisible="true"
                         android:gravity="right"
                         android:inputType="numberDecimal"
                         android:paddingEnd="8dp"

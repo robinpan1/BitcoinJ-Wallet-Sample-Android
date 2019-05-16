@@ -26,6 +26,8 @@ public interface MainActivityContract {
 
         void startScanQR();
         void displayInfoDialog(String myAddress);
+        void displayTxSentDialog(String txid);
+        void displayMnemonic(String mnemonic);
     }
     interface MainActivityPresenter extends BasePresenter {
         void refresh();
@@ -33,6 +35,7 @@ public interface MainActivityContract {
         void send();
 
         void getInfoDialog();
+        void getMnemonic();
     }
     interface MainActivityModel {
 
